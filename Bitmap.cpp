@@ -45,6 +45,13 @@ namespace Frac{
 
 	void Bitmap::SetPixels(int X, int Y, uint8_t Red, uint8_t Green, uint8_t Blue) {
 
+		uint8_t* pPixel = m_pPixels.get();
+		
+		pPixel += (Y * 3) * m_Width + (X * 3);
+
+		pPixel[0] = Blue;
+		pPixel[1] = Green;
+		pPixel[2] = Red;
 	}
 
 	Bitmap::~Bitmap() {
