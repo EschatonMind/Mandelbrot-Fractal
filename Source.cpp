@@ -1,76 +1,23 @@
-#include"Bitmap.h"
-#include"Mandelbrot.h"
-#include"ZoomList.h"
-#include<iostream>
-#include<memory>
-#include<math.h>
-using namespace Frac;
+#include"FractalCreator.h"
+
 using namespace std;
+using namespace Frac;
+
 int main() {
-	int const  WIDTH = 1920;
-	int const  HEIGHT = 1080;
 
-	Bitmap bitmap(WIDTH, HEIGHT);
+	FractalCreator frac1(800, 600);
 
-	double Min = 999999;
-	double Max = -999999;
+	frac1.AddRange(0.0, RGB(0, 0, 0));
+	frac1.AddRange(0.3, RGB(70, 50, 10));
+	frac1.AddRange(0.5, RGB(80, 100, 70));
+	frac1.AddRange(1.0, RGB(200, 150, 255));
 
-	unique_ptr<int[]> Histogram(new int[Mandelbrot::MAX_ITERATIONS] {0});
-	unique_ptr<int[]> Fractal(new int[WIDTH*HEIGHT] {0});
+	cout << frac1.GetRange(999) << endl;
+	frac1.AddZoom(Zoom(500, 500, 0.5));
+	frac1.AddZoom(Zoom(500, 500, 0.2));
+	frac1.Run("Test.bmp");
 
-	for (int y = 0; y < HEIGHT; y++) {
-
-		for (int x = 0; x < WIDTH; x++) {
-			double XFractal = (x - WIDTH / 2) * (2.0 / WIDTH);
-			double YFractal = (y - HEIGHT / 2) * (2.0 / HEIGHT);
-
-			int Iterations = Mandelbrot::GetIterations(XFractal, YFractal);
-
-			Fractal[y * WIDTH + x] = Iterations;
-
-			if(Iterations!=Mandelbrot::MAX_ITERATIONS){ Histogram[Iterations]++; }
-			
-		}
-	}
-
-	int Total = 0;
-	for (int i = 0; i < Mandelbrot::MAX_ITERATIONS; i++) {
-		Total += Histogram[i];
-	}
-
-
-	for (int y = 0; y < HEIGHT; y++) {
-
-		for (int x = 0; x < WIDTH; x++) {
-
-			uint8_t Red{0};
-			uint8_t Green{0};
-			uint8_t Blue{0};
-
-			int Iterations = Fractal[y * WIDTH + x];
-
-			if (Iterations != Mandelbrot::MAX_ITERATIONS) {
-				double Hue = 0;
-
-				for (int i = 0; i <= Iterations; i++) {
-					Hue += ((double)Histogram[i] / Total);
-				}
-
-				Red = pow(255, Hue);
-				Green = pow(255, Hue);
-				Blue = pow(255, Hue);
-
-			}
-			
-			bitmap.SetPixels(x, y, Red, Green, Blue);
-		}
-	}
-
-	cout << Min << ", " << Max << flush << endl;
-
-	bitmap.Write("Test.bmp");
-
-	cout << "Finish";
+	cout << "finished" << endl;
 
 	return 0;
 }

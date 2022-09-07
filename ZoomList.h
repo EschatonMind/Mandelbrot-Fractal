@@ -11,6 +11,10 @@ namespace Frac {
 	{
 
 	private:
+		int m_XCenter{ 0 };
+		int m_YCenter{ 0 };
+		double m_Scale{ 1.0 };
+
 		int m_Width{ 0 };
 		int m_Height{ 0 };
 		vector<Zoom> Zooms;
